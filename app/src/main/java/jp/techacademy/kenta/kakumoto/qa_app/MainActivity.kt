@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val answerName = temp["name"] ?: ""
                     val answerUid = temp["uid"] ?: ""
                     val answer = Answer(answerBody, answerName, answerUid, key)
-                    Log.d("TEST", "onChildAdded answer"+answer.toString())
+                    //Log.d("TEST", "onChildAdded answer"+answer.toString())
                     answerArrayList.add(answer) 
                 }
             }
