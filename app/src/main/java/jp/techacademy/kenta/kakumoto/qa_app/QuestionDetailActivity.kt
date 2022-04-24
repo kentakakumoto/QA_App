@@ -46,29 +46,24 @@ class QuestionDetailActivity : AppCompatActivity() {
 
     private val mFavoriteEventListener = object: ChildEventListener{
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-            Log.d("TEST","mFavoriteEventListener called")
-            isFavorite = true
-            Log.d("TEST","isFavorite is true")
+            Log.d("TEST","onChildAdded called")
             favoriteImageView?.setImageResource(R.drawable.ic_favorite)
-
-            favoriteImageView?.setOnClickListener {
-                    mFavoriteRef.removeValue()
-                    isFavorite = false
-            }
+            isFavorite = true
         }
 
         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
 
         override fun onChildRemoved(snapshot: DataSnapshot) {
-            favoriteImageView?.setImageResource(R.drawable.ic_favorite_border)
             Log.d("TEST","onChildRemoved called")
-
-            favoriteImageView?.setOnClickListener {
-                    val data = HashMap<String, String>()
-                    data["genre"] = mQuestion.genre.toString()
-                    mFavoriteRef.setValue(data)
-                    isFavorite = true
-            }
+            isFavorite = false
+            favoriteImageView?.setImageResource(R.drawable.ic_favorite_border)
+//
+//            favoriteImageView?.setOnClickListener {
+//                    val data = HashMap<String, String>()
+//                    data["genre"] = mQuestion.genre.toString()
+//                    mFavoriteRef.setValue(data)
+//                    isFavorite = true
+//            }
         }
 
         override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
@@ -120,13 +115,18 @@ class QuestionDetailActivity : AppCompatActivity() {
             mFavoriteRef = databaseReference.child(FavoritePATH).child(user.uid).child(mQuestion.questionUid)
             mFavoriteRef.addChildEventListener(mFavoriteEventListener)
 
-            favoriteImageView?.setImageResource(R.drawable.ic_favorite_border)
-            favoriteImageView?.setOnClickListener {
-                favoriteImageView?.setImageResource(R.drawable.ic_favorite)
-                val data = HashMap<String, String>()
-                data["genre"] = mQuestion.genre.toString()
-                mFavoriteRef.setValue(data)
-                isFavorite = true
+            if(isFavorite) favoriteImageView.setImageResource(R.drawable.ic_favorite) else favoriteImageView.setImageResource(R.drawable.ic_favorite_border)
+
+            favoriteImageView.setOnClickListener {
+                 if(isFavorite) {
+                     Log.d("TEST","isFavorite called")
+                     mFavoriteRef.removeValue()
+                 } else {
+                     Log.d("TEST","isFavorite NOT called")
+                     val data = HashMap<String, String>()
+                     data["genre"] = mQuestion.genre.toString()
+                     mFavoriteRef.setValue(data)
+                 }
             }
         } else{
             favoriteImageView?.visibility = View.INVISIBLE

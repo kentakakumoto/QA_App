@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -202,6 +203,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }else if(id == R.id.nav_computer){
             toolbar.title = getString(R.string.menu_computer_label)
             mGenre = 4
+        }else if(id == R.id.nav_favorite){
+            val intent = Intent(applicationContext, FavoriteActivity::class.java)
+            startActivity(intent)
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -218,5 +222,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mGenreRef = mDatabaseReference.child(ContentsPATH).child(mGenre.toString())
         mGenreRef!!.addChildEventListener(mEventListener)
         return true
+    }
+
+    override fun onStart(){
+        super.onStart()
+        Log.d("TEST","onStart")
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if(user != null){
+            nav_view.menu.getItem(4).isVisible = true
+        }else{
+            nav_view.menu.getItem(4).isVisible = false
+        }
     }
 }
